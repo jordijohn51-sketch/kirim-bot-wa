@@ -29,8 +29,7 @@
   </div>
 
   <script>
-    // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT KAMU (/exec)
-    const GAS_URL = "TEMPEL_URL_APPS_SCRIPT_KAMU_DI_SINI";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbztm4N6tcjpsYef6WNSF90ThrYcwUkmLMkWbybOjrUOhkBXBIsCA8-_6UIDsMPhkoTM/exec";
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
@@ -47,17 +46,15 @@
       logBox.prepend(div);
     }
 
-    // Tangkap link otomatis saat dibagikan dari IG/TikTok
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const sharedText = [params.get('url'), params.get('text'), params.get('title')].filter(Boolean).join(' ');
       
-      // Ekstrak hanya URL http/https dari teks share TikTok/IG
       const urlMatch = sharedText.match(/https?:\/\/[^\s]+/g);
       if (urlMatch && urlMatch.length > 0) {
         linksBox.value = urlMatch.join('\n');
         log('Link dari menu Bagikan berhasil ditangkap! Mengirim otomatis...', 'ok');
-        kirimSemua(); // Langsung kirim otomatis begitu dibagikan!
+        kirimSemua();
       } else {
         log('Siap menerima link. Buka IG/TikTok > Bagikan > pilih Bot WA.');
       }
@@ -72,6 +69,9 @@
         try {
           const res = await fetch(GAS_URL, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            },
             body: JSON.stringify({ message: lines[i] })
           });
           const data = await res.json();
